@@ -37,14 +37,16 @@ class LoginScreen:
             cur = conn.cursor()
 
             # Query to check if the user exists with the given username and password
-            cur.execute("SELECT username FROM users WHERE username = %s AND password = %s", (username, password))
+            cur.execute("SELECT username , role FROM users WHERE username = %s AND password = %s", (username, password))
             result = cur.fetchone()
 
             if result:
                 # Successful login
+                role = result[0]
+                is_admin = role == 'admin'  # Set the flag based on role
                 self.window.destroy()  # Close the login window
                 root = tk.Tk()
-                DashboardScreen(root, username)  # Pass the username to the dashboard
+                DashboardScreen(root, username, is_admin)  # Pass the username to the dashboard
                 root.mainloop()
             else:
                 messagebox.showerror("Error", "Invalid credentials")
