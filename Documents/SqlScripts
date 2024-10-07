@@ -1,0 +1,97 @@
+-- Create the home_automation database
+CREATE DATABASE home_automation;
+
+-- Switch to the home_automation database
+\c home_automation;
+
+-- Create the rooms table
+CREATE TABLE rooms (
+    id SERIAL PRIMARY KEY,
+    room_name VARCHAR(50) NOT NULL,
+    floor INT
+);
+
+-- Create the devices table
+CREATE TABLE devices (
+    id SERIAL PRIMARY KEY,
+    device_name VARCHAR(50) NOT NULL,
+    device_type VARCHAR(50) NOT NULL,  -- Light, Thermostat, Camera, etc.
+    status VARCHAR(20) DEFAULT 'off',  -- on/off
+    room_id INT,
+    connection_type VARCHAR(20),  -- Wi-Fi, Zigbee, Bluetooth, etc.
+    battery_level INT,            -- Battery percentage (if applicable)
+    energy_usage DECIMAL(5,2),    -- Energy usage in kWh (if applicable)
+    last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_room
+      FOREIGN KEY(room_id)
+      REFERENCES rooms(id)
+);
+
+-- Create the schedules table
+CREATE TABLE schedules (
+    id SERIAL PRIMARY KEY,
+    device_id INT,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    CONSTRAINT fk_device
+      FOREIGN KEY(device_id)
+      REFERENCES devices(id)
+);
+
+-- Create the users table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,  -- In production, store hashed passwords
+    role VARCHAR(20) DEFAULT 'user'  -- admin/user
+);
+
+-- Create the logs table
+CREATE TABLE logs (
+    id SERIAL PRIMARY KEY,
+    device_id INT,
+    user_id INT,
+    action VARCHAR(50),   -- e.g., 'turn on', 'turn off'
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_device_log
+      FOREIGN KEY(device_id)
+      REFERENCES devices(id),
+    CONSTRAINT fk_user_log
+      FOREIGN KEY(user_id)
+      REFERENCES users(id)
+);
+
+-- Insert sample data into rooms
+INSERT INTO rooms (room_name, floor) VALUES
+('Living Room', 1),
+('Bedroom', 2),
+('Kitchen', 1),
+('Garage', 1);
+
+-- Insert sample data into devices
+INSERT INTO devices (device_name, device_type, status, room_id, connection_type, battery_level, energy_usage) VALUES
+('Smart Light Bulb', 'Light', 'off', 1, 'Wi-Fi', NULL, 0.05),
+('Thermostat', 'Thermostat', 'off', 2, 'Wi-Fi', NULL, 0.10),
+('Security Camera', 'Camera', 'on', 3, 'Wi-Fi', 85, 0.03),
+('Smart Plug', 'Plug', 'on', 4, 'Bluetooth', NULL, 0.08);
+
+-- Insert sample data into schedules
+INSERT INTO schedules (device_id, start_time, end_time) VALUES
+(1, '2024-10-07 06:00:00', '2024-10-07 08:00:00'),
+(2, '2024-10-07 09:00:00', '2024-10-07 18:00:00'),
+(3, '2024-10-07 18:00:00', '2024-10-07 22:00:00');
+
+-- Insert sample data into users
+INSERT INTO users (username, password, role) VALUES
+('admin', 'adminpassword', 'admin'),
+('user1', 'userpassword', 'user'),
+('user2', 'password123', 'user');
+
+-- Insert sample data into logs
+INSERT INTO logs (device_id, user_id, action) VALUES
+(1, 1, 'turn on'),
+(2, 2, 'turn off'),
+(3, 1, 'turn on'),
+(4, 3, 'turn off');
+
+-- End of script

@@ -1,0 +1,22 @@
+version: '3'
+services:
+  flask-app:
+    build: ./website
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: mynewuser
+      POSTGRES_PASSWORD: mynewpassword
+      POSTGRES_DB: home-automation
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-data:
