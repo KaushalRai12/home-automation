@@ -1,4 +1,4 @@
-import tkinter as tk
+import customtkinter as ctk
 from tkinter import messagebox
 import psycopg2
 
@@ -8,20 +8,27 @@ class ChangePasswordScreen:
         self.logged_in_username = logged_in_username
 
         self.window.title(f"Change Password - Logged in as {logged_in_username}")
-        self.window.geometry("300x200")
+        self.window.geometry("400x400")
+        
+        # Setting a nice dark theme look
+        ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
+        ctk.set_default_color_theme("blue")  # Themes: "blue", "green", "dark-blue"
 
-        self.old_password_label = tk.Label(self.window, text="Old Password")
-        self.old_password_label.pack()
-        self.old_password_entry = tk.Entry(self.window, show="*")
-        self.old_password_entry.pack()
+        self.frame = ctk.CTkFrame(self.window)
+        self.frame.pack(pady=20, padx=40, fill="both", expand=True)
 
-        self.new_password_label = tk.Label(self.window, text="New Password")
-        self.new_password_label.pack()
-        self.new_password_entry = tk.Entry(self.window, show="*")
-        self.new_password_entry.pack()
+        self.old_password_label = ctk.CTkLabel(self.frame, text="Old Password")
+        self.old_password_label.pack(pady=12, padx=10)
+        self.old_password_entry = ctk.CTkEntry(self.frame, show="*")
+        self.old_password_entry.pack(pady=12, padx=10)
 
-        self.change_button = tk.Button(self.window, text="Change Password", command=self.change_password)
-        self.change_button.pack()
+        self.new_password_label = ctk.CTkLabel(self.frame, text="New Password")
+        self.new_password_label.pack(pady=12, padx=10)
+        self.new_password_entry = ctk.CTkEntry(self.frame, show="*")
+        self.new_password_entry.pack(pady=12, padx=10)
+
+        self.change_button = ctk.CTkButton(self.frame, text="Change Password", command=self.change_password)
+        self.change_button.pack(pady=25, padx=10)
 
     def change_password(self):
         old_password = self.old_password_entry.get()
@@ -54,3 +61,9 @@ class ChangePasswordScreen:
 
         except Exception as e:
             messagebox.showerror("Database Error", f"Error updating password: {str(e)}")
+
+# Test run
+if __name__ == "__main__":
+    root = ctk.CTk()  # Using customtkinter instead of Tk
+    ChangePasswordScreen(root, "test_user")
+    root.mainloop()

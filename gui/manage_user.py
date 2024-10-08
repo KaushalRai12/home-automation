@@ -1,4 +1,4 @@
-import tkinter as tk
+import customtkinter as ctk
 from tkinter import messagebox
 import psycopg2
 
@@ -6,44 +6,49 @@ class ManageUsersScreen:
     def __init__(self, root):
         self.root = root
         self.root.title("Manage Users")
+        self.root.geometry("400x400")
+        
+        # Set up appearance mode and color theme
+        ctk.set_appearance_mode("System")  # Modes: "System", "Dark", "Light"
+        ctk.set_default_color_theme("blue")  # Themes: "blue", "dark-blue", "green"
+
+        # Create Frame for manage users form
+        self.frame = ctk.CTkFrame(self.root)
+        self.frame.pack(pady=20, padx=40, fill="both", expand=True)
+
+        # Title Label
+        self.title_label = ctk.CTkLabel(self.frame, text="Manage Users", font=ctk.CTkFont(size=20, weight="bold"))
+        self.title_label.pack(pady=12, padx=10)
 
         # Create User Form
-        tk.Label(root, text="Create New User").grid(row=0, column=0, padx=10, pady=10)
-        tk.Label(root, text="Username").grid(row=1, column=0, padx=10, pady=5)
-        tk.Label(root, text="Password").grid(row=2, column=0, padx=10, pady=5)
-        tk.Label(root, text="Role (admin/user)").grid(row=3, column=0, padx=10, pady=5)
-
-        self.username_entry = tk.Entry(root)
-        self.password_entry = tk.Entry(root, show="*")
-        self.role_entry = tk.Entry(root)
-
-        self.username_entry.grid(row=1, column=1)
-        self.password_entry.grid(row=2, column=1)
-        self.role_entry.grid(row=3, column=1)
-
-        tk.Button(root, text="Create User", command=self.create_user).grid(row=4, column=1, pady=10)
+        self.create_user_label = ctk.CTkLabel(self.frame, text="Create New User")
+        self.create_user_label.pack(pady=10)
+        self.username_entry = ctk.CTkEntry(self.frame, placeholder_text="Username")
+        self.username_entry.pack(pady=5)
+        self.password_entry = ctk.CTkEntry(self.frame, placeholder_text="Password", show="*")
+        self.password_entry.pack(pady=5)
+        self.role_entry = ctk.CTkEntry(self.frame, placeholder_text="Role (admin/user)")
+        self.role_entry.pack(pady=5)
+        self.create_user_button = ctk.CTkButton(self.frame, text="Create User", command=self.create_user)
+        self.create_user_button.pack(pady=10)
 
         # Update User Form
-        tk.Label(root, text="Update User").grid(row=5, column=0, padx=10, pady=10)
-        tk.Label(root, text="Existing Username").grid(row=6, column=0, padx=10, pady=5)
-        tk.Label(root, text="New Password").grid(row=7, column=0, padx=10, pady=5)
-
-        self.existing_username_entry = tk.Entry(root)
-        self.new_password_entry = tk.Entry(root, show="*")
-
-        self.existing_username_entry.grid(row=6, column=1)
-        self.new_password_entry.grid(row=7, column=1)
-
-        tk.Button(root, text="Update User", command=self.update_user).grid(row=8, column=1, pady=10)
+        self.update_user_label = ctk.CTkLabel(self.frame, text="Update User")
+        self.update_user_label.pack(pady=10)
+        self.existing_username_entry = ctk.CTkEntry(self.frame, placeholder_text="Existing Username")
+        self.existing_username_entry.pack(pady=5)
+        self.new_password_entry = ctk.CTkEntry(self.frame, placeholder_text="New Password", show="*")
+        self.new_password_entry.pack(pady=5)
+        self.update_user_button = ctk.CTkButton(self.frame, text="Update User", command=self.update_user)
+        self.update_user_button.pack(pady=10)
 
         # Delete User Form
-        tk.Label(root, text="Delete User").grid(row=9, column=0, padx=10, pady=10)
-        tk.Label(root, text="Username to Delete").grid(row=10, column=0, padx=10, pady=5)
-
-        self.delete_username_entry = tk.Entry(root)
-        self.delete_username_entry.grid(row=10, column=1)
-
-        tk.Button(root, text="Delete User", command=self.delete_user).grid(row=11, column=1, pady=10)
+        self.delete_user_label = ctk.CTkLabel(self.frame, text="Delete User")
+        self.delete_user_label.pack(pady=10)
+        self.delete_username_entry = ctk.CTkEntry(self.frame, placeholder_text="Username to Delete")
+        self.delete_username_entry.pack(pady=5)
+        self.delete_user_button = ctk.CTkButton(self.frame, text="Delete User", command=self.delete_user)
+        self.delete_user_button.pack(pady=10)
 
     def create_user(self):
         username = self.username_entry.get()
@@ -56,11 +61,11 @@ class ManageUsersScreen:
 
         try:
             conn = psycopg2.connect(
-            host="localhost",
-            database="home_automation",
-            user="home-automation-admins",
-            password="mypassword"
-        )
+                host="localhost",
+                database="home_automation",
+                user="home-automation-admins",
+                password="mypassword"
+            )
             cur = conn.cursor()
             cur.execute("INSERT INTO users (username, password, role) VALUES (%s, %s, %s)", (username, password, role))
             conn.commit()
@@ -80,11 +85,11 @@ class ManageUsersScreen:
 
         try:
             conn = psycopg2.connect(
-            host="localhost",
-            database="home_automation",
-            user="home-automation-admins",
-            password="mypassword"
-        )
+                host="localhost",
+                database="home_automation",
+                user="home-automation-admins",
+                password="mypassword"
+            )
             cur = conn.cursor()
             cur.execute("UPDATE users SET password = %s WHERE username = %s", (new_password, username))
             conn.commit()
@@ -103,11 +108,11 @@ class ManageUsersScreen:
 
         try:
             conn = psycopg2.connect(
-            host="localhost",
-            database="home_automation",
-            user="home-automation-admins",
-            password="mypassword"
-        )
+                host="localhost",
+                database="home_automation",
+                user="home-automation-admins",
+                password="mypassword"
+            )
             cur = conn.cursor()
             cur.execute("DELETE FROM users WHERE username = %s", (username,))
             conn.commit()
@@ -116,3 +121,9 @@ class ManageUsersScreen:
             messagebox.showinfo("Success", f"User {username} deleted successfully.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to delete user: {str(e)}")
+
+
+if __name__ == "__main__":
+    root = ctk.CTk()  # Use customtkinter root window
+    app = ManageUsersScreen(root)
+    root.mainloop()

@@ -1,26 +1,38 @@
-import tkinter as tk
-from tkinter import messagebox
+import customtkinter as ctk
 import psycopg2
+from tkinter import messagebox
 from dashboard import DashboardScreen
+
+# Set the appearance mode and color theme
+ctk.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
+ctk.set_default_color_theme("blue")  # Themes: "blue", "green", "dark-blue"
 
 class LoginScreen:
     def __init__(self, root_window):
         self.window = root_window
         self.window.title("Login")
-        self.window.geometry("300x200")
+        self.window.geometry("400x400")
+        self.window.configure(padx=30, pady=30)
 
-        self.username_label = tk.Label(self.window, text="Username")
-        self.username_label.pack()
-        self.username_entry = tk.Entry(self.window)
-        self.username_entry.pack()
+        # Title Label
+        self.title_label = ctk.CTkLabel(self.window, text="Login", font=ctk.CTkFont(size=24, weight="bold"))
+        self.title_label.pack(pady=20)
 
-        self.password_label = tk.Label(self.window, text="Password")
-        self.password_label.pack()
-        self.password_entry = tk.Entry(self.window, show="*")
-        self.password_entry.pack()
+        # Username Entry
+        self.username_label = ctk.CTkLabel(self.window, text="Username")
+        self.username_label.pack(pady=5)
+        self.username_entry = ctk.CTkEntry(self.window, width=250)
+        self.username_entry.pack(pady=5)
 
-        self.login_button = tk.Button(self.window, text="Login", command=self.login)
-        self.login_button.pack()
+        # Password Entry
+        self.password_label = ctk.CTkLabel(self.window, text="Password")
+        self.password_label.pack(pady=5)
+        self.password_entry = ctk.CTkEntry(self.window, show="*", width=250)
+        self.password_entry.pack(pady=5)
+
+        # Login Button
+        self.login_button = ctk.CTkButton(self.window, text="Login", command=self.login, width=200)
+        self.login_button.pack(pady=20)
 
     def login(self):
         username = self.username_entry.get()
@@ -37,15 +49,15 @@ class LoginScreen:
             cur = conn.cursor()
 
             # Query to check if the user exists with the given username and password
-            cur.execute("SELECT username , role FROM users WHERE username = %s AND password = %s", (username, password))
+            cur.execute("SELECT username, role FROM users WHERE username = %s AND password = %s", (username, password))
             result = cur.fetchone()
 
             if result:
                 # Successful login
-                role = result[0]
+                role = result[1]
                 is_admin = role == 'admin'  # Set the flag based on role
                 self.window.destroy()  # Close the login window
-                root = tk.Tk()
+                root = ctk.CTk()
                 DashboardScreen(root, username, is_admin)  # Pass the username to the dashboard
                 root.mainloop()
             else:
@@ -57,7 +69,8 @@ class LoginScreen:
         except Exception as e:
             messagebox.showerror("Database Error", f"Error connecting to database: {str(e)}")
 
+
 if __name__ == "__main__":
-    root = tk.Tk()
-    LoginScreen(root)
+    root = ctk.CTk()
+    app = LoginScreen(root)
     root.mainloop()
