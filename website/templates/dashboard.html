@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<div class="dashboard-container">
+    <h2 class="dashboard-title">Dashboard - Logged in as {{ username }}</h2>
+
+    <a href="{{ url_for('change_password') }}" class="dashboard-link">Change Password</a>
+    <a href="{{ url_for('manage_devices') }}" class="dashboard-link">Manage Devices</a>
+    <a href="{{ url_for('monitor_devices') }}" class="dashboard-link">Monitor Devices</a>
+
+    {% if is_admin %}
+        <a href="{{ url_for('manage_users') }}" class="dashboard-link">Manage Users</a>
+    {% endif %}
+</div>
+
+</body>
+</html>
