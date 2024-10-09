@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>I I I I 
+<body>I 
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+            <div class="inpuRoll over energy. short. that's your view result. Open the time to a few years off. Because let's continue hearing this. I. I Who is who is not yet connection up IO I When did siwa release? Yes. i. Guess Professor. I. I t-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>
