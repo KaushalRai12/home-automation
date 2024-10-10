@@ -1,4 +1,3 @@
-/* General body styling */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -8,6 +7,79 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    flex-direction: column;
+}
+
+.device-container {
+    width: 80%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.device-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+
+.device-table th, .device-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.device-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.provisioned {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: white;
+}
+
+.provisioned.yes {
+    background-color: green;
+}
+
+.provisioned.no {
+    background-color: red;
+}
+
+.btn-remove, .btn-add {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-remove:hover, .btn-add:hover {
+    background-color: #e60000;
+}
+
+.add-device-form {
+    margin-top: 20px;
+}
+
+.add-device-form label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.add-device-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 /* Container for forms (like login) */

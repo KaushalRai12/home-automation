@@ -85,7 +85,7 @@ def change_password():
 
 
 # Manage Devices route
-@app.route('/manage_devices', methods=['GET'])
+@app.route('/manage_devices', methods=['GET', 'POST'])
 def manage_devices():
     if 'logged_in' not in session:
         return redirect(url_for('login'))
@@ -93,13 +93,89 @@ def manage_devices():
     conn = get_db_connection()
     cur = conn.cursor()
 
+    if request.method == 'POST':
+        # Adding a new device
+        device_name = request.form['device_name']
+        device_type = request.form['device_type']
+        connection_type = request.form['connection_type']
+        
+        cur.execute("INSERT INTO devices (device_name, device_type, connection_type, status, provisioned) VALUES (%s, %s, %s, 'off', FALSE)", 
+                    (device_name, device_type, connection_type))
+        conn.commit()
+        flash("Device added successfully", "success")
+        return redirect(url_for('manage_devices'))
+
     # Fetch devices from the database
-    cur.execute("SELECT device_name, status FROM devices")
+    cur.execute("SELECT device_name,device_type,connection_type,battery_level,energy_usage, status, provisioned FROM devices")
     devices = cur.fetchall()
 
     cur.close()
     conn.close()
+
     return render_template('manage_devices.html', devices=devices)
+
+# Toggle Device Status
+@app.route('/toggle_device_status/<device_name>', methods=['POST'])
+def toggle_device_status(device_name):
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+
+    new_status = request.form['status']
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE devices SET status = %s WHERE device_name = %s", (new_status, device_name))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash(f"Device '{device_name}' turned {new_status}", "success")
+    return redirect(url_for('manage_devices'))
+
+# Add Device route
+@app.route('/add_device', methods=['POST'])
+def add_device():
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+
+    # Get the device details from the form
+    device_name = request.form['device_name']
+    device_type = request.form['device_type']
+    connection_type = request.form['connection_type']
+
+    if device_name and device_type and connection_type:
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        # Insert the new device into the database
+        cur.execute("INSERT INTO devices (device_name, device_type, connection_type, status, provisioned) VALUES (%s, %s, %s, 'off', FALSE)", 
+                    (device_name, device_type, connection_type))
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        flash(f"Device '{device_name}' added successfully", "success")
+    else:
+        flash("All fields are required to add a device", "error")
+
+    return redirect(url_for('manage_devices'))
+
+# Remove Device
+@app.route('/remove_device/<device_name>', methods=['POST'])
+def remove_device(device_name):
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM devices WHERE device_name = %s", (device_name,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    flash(f"Device '{device_name}' removed successfully", "success")
+    return redirect(url_for('manage_devices'))
 
 # Monitor Devices route
 @app.route('/monitor_devices', methods=['GET'])

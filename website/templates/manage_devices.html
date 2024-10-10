@@ -7,8 +7,59 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Manage Your Devices</h1>
-    <p>Here you can manage all your connected devices.</p>
-    <!-- Add more functionality here as needed -->
+    <div class="device-container">
+        <h1>Your Devices</h1>
+        <p>Manage your connected devices below.</p>
+
+        <table class="device-table">
+            <thead>
+                <tr>
+                    <th>Device Name</th>
+                    <th>Device Type</th>
+                    <th>Connection Type</th>
+                    <th>Battery Level</th>
+                    <th>Energy Usage</th>
+                    <th>Status</th>
+                    <th>Provisioned</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td>{{ device[0] }}</td>
+                    <td>{{ device[1] }}</td>
+                    <td>{{ device[2] }}</td>
+                    <td>{{ device[3] if device[3] is not none else 'N/A' }}</td>
+                    <td>{{ device[4] }}</td>
+                    <td>{{ device[5] }}</td>
+                    <td><span class="provisioned {{ 'yes' if device[6] else 'no' }}">{{ 'Yes' if device[6] else 'No' }}</span></td>
+                    <td>
+                        <!-- Remove device form -->
+                        <form method="POST" action="{{ url_for('remove_device', device_name=device[0]) }}" style="display:inline;">
+                            <button type="submit" class="btn-remove">Remove</button>
+                        </form>
+                        
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Add Device Form -->
+        <h3>Add New Device</h3>
+        <form method="POST" action="{{ url_for('add_device') }}" class="add-device-form">
+            <label for="device_name">Device Name:</label>
+            <input type="text" id="device_name" name="device_name" required>
+            
+            <label for="device_type">Device Type:</label>
+            <input type="text" id="device_type" name="device_type" required>
+            
+            <label for="connection_type">Connection Type:</label>
+            <input type="text" id="connection_type" name="connection_type" required>
+            
+            <button type="submit" class="btn-add">Add Device</button>
+        </form>
+    </div>
 </body>
 </html>
